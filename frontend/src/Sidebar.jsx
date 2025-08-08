@@ -9,13 +9,12 @@ import {
   Bluetooth,
   Users,
   MessageCircle,
-  Flame,
   Moon,
-  Sun
+  Sun,
 } from "lucide-react";
 
 export default function Sidebar({ activeTab, setActiveTab }) {
-  // Read initial theme from localStorage or system preference
+  // Initialize dark mode from localStorage or system preference
   React.useEffect(() => {
     const theme = localStorage.getItem("theme");
     if (
@@ -26,31 +25,27 @@ export default function Sidebar({ activeTab, setActiveTab }) {
     }
   }, []);
 
-  // Dark mode toggle handler
+  // Toggle dark mode and persist preference
   const toggleDark = () => {
     const html = document.documentElement;
-    const isDark = html.classList.toggle("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
+    const willBeDark = !html.classList.contains("dark");
+    html.classList.toggle("dark");
+    localStorage.setItem("theme", willBeDark ? "dark" : "light");
   };
 
-
   return (
-    <nav className="w-80 bg-white shadow-xl h-screen flex flex-col justify-between border-r border-gray-100 dark:bg-gray-900 dark:border-gray-800 transition-colors">
+    // overflow-y-auto enables scrolling when content exceeds the viewport height
+    <nav className="w-80 bg-white shadow-xl h-screen flex flex-col justify-between border-r border-gray-100 dark:bg-gray-900 dark:border-gray-800 overflow-y-auto transition-colors">
       <div>
-        {/* Brand - Clickable */}
+        {/* Brand */}
         <button
           onClick={() => setActiveTab("dashboard")}
           className="flex items-center gap-2 mb-8 px-6 pt-6 focus:outline-none"
           style={{ cursor: "pointer" }}
-          tabIndex={0}
           aria-label="Go to Dashboard"
+          type="button"
         >
-          <img
-            src="/favicon.png"
-            alt="VagalFit Heart"
-            className="w-8 h-8"
-            style={{ display: "block" }}
-          />
+          <img src="/favicon.png" alt="VagalFit Heart" className="w-8 h-8" />
           <span
             className="text-2xl font-semibold"
             style={{ color: "#8800cc", letterSpacing: "-0.01em" }}
@@ -62,24 +57,24 @@ export default function Sidebar({ activeTab, setActiveTab }) {
         {/* Dark mode toggle */}
         <div className="flex items-center gap-2 px-6 mb-6">
           <button
-  onClick={toggleDark}
-  className="flex items-center gap-2 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm font-medium dark:text-white transition"
-  aria-label="Toggle dark mode"
-  type="button"
->
-  <Moon className="w-4 h-4 block dark:hidden" />    {/* Show in light mode */}
-  <Sun className="w-4 h-4 hidden dark:block" />     {/* Show in dark mode */}
-  <span className="block dark:hidden">Dark</span>
-  <span className="hidden dark:block">Light</span>
-</button>
+            onClick={toggleDark}
+            className="flex items-center gap-2 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm font-medium dark:text-white transition"
+            aria-label="Toggle dark mode"
+            type="button"
+          >
+            <Moon className="w-4 h-4 block dark:hidden" />
+            <Sun className="w-4 h-4 hidden dark:block" />
+            <span className="block dark:hidden">Dark</span>
+            <span className="hidden dark:block">Light</span>
+          </button>
         </div>
 
-        {/* Main Nav */}
+        {/* Main navigation */}
         <div className="space-y-2 px-4">
           {[
             { id: "dashboard", label: "Dashboard", icon: Activity },
             { id: "workout", label: "Workout Session", icon: Heart },
-            { id: "goals", label: "Goals", icon: Target }
+            { id: "goals", label: "Goals", icon: Target },
           ].map((item) => {
             const Icon = item.icon;
             return (
@@ -89,8 +84,9 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                 className={`w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors ${
                   activeTab === item.id
                     ? "bg-purple-100 text-purple-700 border-l-4 border-purple-600 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-400"
-                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800"
+                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                 }`}
+                type="button"
               >
                 <Icon className="h-5 w-5 mr-3" />
                 {item.label}
@@ -98,6 +94,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             );
           })}
         </div>
+
         {/* Fitness Calendar */}
         <div className="px-6 mt-8">
           <div className="flex items-center gap-2 text-purple-600 dark:text-purple-300 mb-1">
@@ -109,11 +106,20 @@ export default function Sidebar({ activeTab, setActiveTab }) {
           </div>
           <div className="bg-gray-50 rounded-lg p-3 shadow text-center mt-1 dark:bg-gray-800">
             <div className="flex items-center justify-between mb-2 text-xs">
-              <button className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+              <button
+                className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                type="button"
+              >
                 &lt;
               </button>
-              <span className="font-medium">July 2025</span>
-              <button className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+              {/* Make month label visible in dark mode */}
+              <span className="font-medium text-gray-800 dark:text-gray-200">
+                July 2025
+              </span>
+              <button
+                className="px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                type="button"
+              >
                 &gt;
               </button>
             </div>
@@ -129,23 +135,11 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             </div>
           </div>
         </div>
-        {/* Hot Streak */}
-        <div className="px-6 mt-8">
-          <div className="rounded-xl bg-gradient-to-b from-orange-50 to-white dark:from-orange-900 dark:to-gray-900 p-4 flex flex-col items-center shadow border border-orange-100 dark:border-orange-800">
-            <Flame className="h-6 w-6 text-orange-400 mb-1" />
-            <div className="text-xs text-orange-500 font-semibold dark:text-orange-200">
-              Current Streak
-            </div>
-            <div className="text-2xl font-bold text-orange-600 dark:text-orange-300">
-              5 <span className="text-base font-normal">days</span>
-            </div>
-            <div className="text-xs text-orange-400 mt-1 dark:text-orange-200">
-              Keep it up!
-            </div>
-          </div>
-        </div>
+
+        {/* Removed the Current Streak card to prevent overlaying the lower menu */}
       </div>
-      {/* Lower Nav */}
+
+      {/* Lower navigation */}
       <div className="pb-4 px-4">
         <div className="space-y-2">
           {[
@@ -153,7 +147,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             { id: "devices", label: "Devices", icon: Bluetooth },
             { id: "profile", label: "My Profile", icon: User },
             { id: "settings", label: "Settings", icon: SettingsIcon },
-            { id: "support", label: "Support", icon: MessageCircle }
+            { id: "support", label: "Support", icon: MessageCircle },
           ].map((item) => {
             const Icon = item.icon;
             return (
@@ -163,8 +157,9 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                 className={`w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors ${
                   activeTab === item.id
                     ? "bg-purple-100 text-purple-700 border-l-4 border-purple-600 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-400"
-                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800"
+                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                 }`}
+                type="button"
               >
                 <Icon className="h-5 w-5 mr-3" />
                 {item.label}

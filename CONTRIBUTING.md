@@ -1,6 +1,6 @@
 # 🤝 Contributing to VagalFit
 
-Thank you for your interest in contributing to **VagalFit**!  
+Thank you for your interest in contributing to **VagalFit**!!!
 This project is in active development and we welcome contributions that make it better for everyone.
 
 ---
